@@ -1,11 +1,11 @@
-package com.annotationprocessor.json;
+package com.annotationprocessor.json.modeler;
 
-import com.api.Jsonify;
+import com.annotationprocessor.json.utils.PackageUtils;
+import com.mycardboarddreams.api.Jsonify;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeSpec;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -17,9 +17,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import static java.util.Collections.singleton;
@@ -38,7 +36,7 @@ public class JsonProcessor extends AbstractProcessor{
     }
 
     @Override
-    public Set getSupportedAnnotationTypes() {
+    public Set<String> getSupportedAnnotationTypes() {
         return singleton(Jsonify.class.getCanonicalName());
     }
 
@@ -50,41 +48,60 @@ public class JsonProcessor extends AbstractProcessor{
     @Override
     public boolean process(Set annotations, RoundEnvironment roundEnv) {
 
+        if(roundEnv.getElementsAnnotatedWith(Jsonify.class).size() > 0 && !ModelCreator.processedClasses.isEmpty()){
+            messager.printMessage(Diagnostic.Kind.ERROR, "Did Json parsing in more than one round...");
+            return true;
+        }
+
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(Jsonify.class)) {
 
-            if(!validateAnnotatedElement(annotatedElement)){
+            try {
+                if (!validateAnnotatedElement(annotatedElement)) {
+                    error(annotatedElement, "Failed to process annotation for %s. Is not a valid target.", annotatedElement.getSimpleName().toString());
+                    return true;
+                }
+
+                Jsonify jsonify = annotatedElement.getAnnotation(Jsonify.class);
+                String[] ignore = jsonify.ignoreBeginsWith();
+                VariableElement element = (VariableElement) annotatedElement;
+
+                String packageName = PackageUtils.getPackageName(processingEnv.getElementUtils(), element) + ".models";
+
+                ModelCreator modelCreator = new ModelCreator(Arrays.asList(ignore), packageName);
+                modelCreator.createObjectModel(
+                        packageName,
+                        (String) element.getConstantValue());
+
+            } catch (Exception e){
+                error(annotatedElement, "Failed to generate annotated class for model %s. \n%s", annotatedElement.getSimpleName().toString(), e.getMessage());
                 return true;
             }
-
-            Jsonify jsonify = annotatedElement.getAnnotation(Jsonify.class);
-            VariableElement element = (VariableElement)annotatedElement;
-
-            generateClass(element);
         }
+
+        generateClasses();
 
         return true;
     }
 
-    private void generateClass(VariableElement element) {
-        try {
-            String packageName = getPackageName(processingEnv.getElementUtils(), element);
-            List<TypeSpec> models = ModelCreator.createObjectModel(packageName, element.getSimpleName().toString(), (String) element.getConstantValue());
+    private void generateClasses() {
+        if(ModelCreator.processedClasses.size() == 0)
+            return;
 
-            for(TypeSpec model : models) {
-                JavaFile javaFile = builder(packageName, model).build();
+        StringBuilder sb = new StringBuilder("Writing Java Classes: [");
+        try {
+            for(AnnotatedClass model : ModelCreator.processedClasses) {
+                sb.append(model.getClassName()).append(", ");
+                JavaFile javaFile = builder(model.getPackageName(), model.getSpec()).build();
                 javaFile.writeTo(processingEnv.getFiler());
             }
-        } catch (Exception e){
-            error(element, "Failed to write java class for model %s", element.getSimpleName().toString());
-        }
-    }
 
-    static String getPackageName(Elements elementUtils, VariableElement type) {
-        PackageElement pkg = elementUtils.getPackageOf(type);
-        if (pkg.isUnnamed()) {
-            throw new IllegalArgumentException(type.toString());
+            sb.append("]");
+            System.out.println(sb.toString());
+        } catch (Exception e){
+            messager.printMessage(Diagnostic.Kind.ERROR, String.format("Failed to write java class.\n %s", e.getMessage()));
+        } finally {
+            ModelCreator.processedClasses.clear();
         }
-        return pkg.getQualifiedName().toString();
     }
 
     private boolean validateAnnotatedElement(Element annotatedElement){
