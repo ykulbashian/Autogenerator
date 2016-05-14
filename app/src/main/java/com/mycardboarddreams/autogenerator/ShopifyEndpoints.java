@@ -10,7 +10,6 @@ public class ShopifyEndpoints {
     @FetchJson("https://{host}/api/apps/{appId}/collection_listings.json")
     String collectionListing;
 
-
     @FetchJson("https://{host}/api/apps/{appId}/product_listings.json?product_ids={product_id}")
     String productListing;
 

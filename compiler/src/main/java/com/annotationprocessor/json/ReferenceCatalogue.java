@@ -37,12 +37,12 @@ public class ReferenceCatalogue {
         try {
             properties.load(is);
 
-            capturedBlocks.add(new PropertyBlock("appId", properties.getProperty("appId")));
-            capturedBlocks.add(new PropertyBlock("host", properties.getProperty("host")));
-            capturedBlocks.add(new PropertyBlock("product_id", properties.getProperty("product_id")));
-            capturedBlocks.add(new PropertyBlock("customer_id", properties.getProperty("customer_id")));
-            capturedBlocks.add(new PropertyBlock("authorization", properties.getProperty("authorization")));
-            capturedBlocks.add(new PropertyBlock("customertoken", properties.getProperty("customertoken")));
+            capturedBlocks.add(new PropertyBlock("appId", "123"));
+            capturedBlocks.add(new PropertyBlock("host", "fake.myshopify.com"));
+            capturedBlocks.add(new PropertyBlock("product_id", "1234567"));
+            capturedBlocks.add(new PropertyBlock("customer_id", "8910111213"));
+            capturedBlocks.add(new PropertyBlock("authorization", "fakeauthorization123"));
+            capturedBlocks.add(new PropertyBlock("customertoken", "fakecustomer123"));
         } catch (IOException e){
             e.printStackTrace();
         }

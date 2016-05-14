@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.annotationprocessor.json.ReferenceCatalogue;
 import com.annotationprocessor.json.blocks.Block;
+import com.annotationprocessor.json.mocks.MockResponseInterceptor;
 import com.annotationprocessor.json.utils.StringUtils;
 import com.mycardboarddreams.api.FetchJson;
 import com.mycardboarddreams.api.Jsonify;
@@ -152,7 +153,9 @@ public class Endpoint implements Block<String> {
 
         String completedUrl = completeUrl();
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new MockResponseInterceptor())
+                .build();
 
         System.out.println(String.format("Fetching from %s", completedUrl));
 

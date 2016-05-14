@@ -1,6 +1,12 @@
-package com.mycardboarddreams.autogenerator;
+package com.annotationprocessor.json.mocks;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.mycardboarddreams.api.Jsonify;
+
+import okhttp3.MediaType;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Created by ykulbashian on 16-04-17.
@@ -8826,5 +8832,107 @@ public class ShopifyResponses {
             "    }," +
             "    \"code\": 200," +
             "    \"message\": \"OK\"" +
+            "}";    
+    
+    @Jsonify(ignoreBeginsWith = {"Body"})
+    public static final String shopify112 =
+            "{    " +
+            "    \"body\": {    " +
+            "        \"customer\": {    " +
+            "            \"id\": 2773005510,    " +
+            "            \"email\": \"asd@asd.com\",    " +
+            "            \"default_address\": {    " +
+            "                \"id\": 3279871622,    " +
+            "                \"first_name\": \"MobileBuy\",    " +
+            "                \"last_name\": \"asfas\",    " +
+            "                \"company\": null,    " +
+            "                \"address1\": \"150 Elgin Street\",    " +
+            "                \"address2\": \"8th Floor\",    " +
+            "                \"city\": \"Toledo\",    " +
+            "                \"province\": \"Ciudad Autónoma de Buenos Aires\",    " +
+            "                \"country\": \"Argentina\",    " +
+            "                \"zip\": \"124124\",    " +
+            "                \"phone\": null,    " +
+            "                \"name\": \"MobileBuy asfas\",    " +
+            "                \"province_code\": \"C\",    " +
+            "                \"country_code\": \"AR\",    " +
+            "                \"country_name\": \"Argentina\",    " +
+            "                \"default\": true    " +
+            "            },    " +
+            "            \"verified_email\": true,    " +
+            "            \"accepts_marketing\": false,    " +
+            "            \"first_name\": \"MobileBuy\",    " +
+            "            \"last_name\": \"asfas\",    " +
+            "            \"orders_count\": 1,    " +
+            "            \"total_spent\": \"0.00\",    " +
+            "            \"created_at\": \"2016-03-28T16:25:03-04:00\",    " +
+            "            \"updated_at\": \"2016-05-02T14:22:29-04:00\",    " +
+            "            \"state\": \"enabled\",    " +
+            "            \"last_order_id\": 3005863686,    " +
+            "            \"last_order_name\": \"#5222\",    " +
+            "            \"addresses\": [{    " +
+            "                \"id\": 3228337350,    " +
+            "                \"first_name\": \"MobileBuy\",    " +
+            "                \"last_name\": \"TestBot\",    " +
+            "                \"phone\": \"1-555-555-5555\",    " +
+            "                \"company\": \"Shopify Inc.\",    " +
+            "                \"address1\": \"150 Elgin Street\",    " +
+            "                \"address2\": \"8th Floor\",    " +
+            "                \"city\": \"Toledo\",    " +
+            "                \"province\": null,    " +
+            "                \"province_code\": null,    " +
+            "                \"country\": null,    " +
+            "                \"country_code\": null,    " +
+            "                \"zip\": \"K1N5T5\"    " +
+            "            }, {    " +
+            "                \"id\": 3228402182,    " +
+            "                \"first_name\": \"MobileBuy\",    " +
+            "                \"last_name\": \"TestBot\",    " +
+            "                \"phone\": \"1-555-555-5555\",    " +
+            "                \"company\": \"Shopify Inc.\",    " +
+            "                \"address1\": \"150 Elgin Street\",    " +
+            "                \"address2\": \"8th Floor\",    " +
+            "                \"city\": \"Ottawa\",    " +
+            "                \"province\": null,    " +
+            "                \"province_code\": null,    " +
+            "                \"country\": null,    " +
+            "                \"country_code\": null,    " +
+            "                \"zip\": \"K1N5T5\"    " +
+            "            }, {    " +
+            "                \"id\": 3228535430,    " +
+            "                \"first_name\": \"Testy\",    " +
+            "                \"last_name\": \"McTesterson\",    " +
+            "                \"phone\": \"1-555-555-5555\",    " +
+            "                \"company\": \"Shopify Inc.\",    " +
+            "                \"address1\": \"150 Elgin Street\",    " +
+            "                \"address2\": \"8th Floor\",    " +
+            "                \"city\": \"Ottawa\",    " +
+            "                \"province\": null,    " +
+            "                \"province_code\": null,    " +
+            "                \"country\": null,    " +
+            "                \"country_code\": null,    " +
+            "                \"zip\": \"K1N5T5\"    " +
+            "            }, {    " +
+            "                \"id\": 3279871622,    " +
+            "                \"first_name\": \"MobileBuy\",    " +
+            "                \"last_name\": \"asfas\",    " +
+            "                \"phone\": null,    " +
+            "                \"company\": null,    " +
+            "                \"address1\": \"150 Elgin Street\",    " +
+            "                \"address2\": \"8th Floor\",    " +
+            "                \"city\": \"Toledo\",    " +
+            "                \"province\": \"Ciudad Autónoma de Buenos Aires\",    " +
+            "                \"province_code\": \"C\",    " +
+            "                \"country\": \"Argentina\",    " +
+            "                \"country_code\": \"AR\",    " +
+            "                \"zip\": \"124124\"    " +
+            "            }],    " +
+            "            \"multipass_identifier\": null,    " +
+            "            \"tax_exempt\": false    " +
+            "        }    " +
+            "    },    " +
+            "    \"code\": 200,    " +
+            "    \"message\": \"OK\"    " +
+            "    " +
             "}";
 }
