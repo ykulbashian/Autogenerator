@@ -1,23 +1,12 @@
 package com.annotationprocessor.json;
 
-import android.util.Log;
-
 import com.annotationprocessor.json.blocks.Block;
 import com.annotationprocessor.json.blocks.PropertyBlock;
 import com.annotationprocessor.json.utils.PackageUtils;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -30,20 +19,12 @@ public class ReferenceCatalogue {
     private static final List<Block> capturedBlocks = new ArrayList<>();
 
     static {
-        Properties properties = new Properties();
-        InputStream is = ReferenceCatalogue.class.getClassLoader().getResourceAsStream("shop.properties");
-        try {
-            properties.load(is);
-
-            capturedBlocks.add(new PropertyBlock("appId", "123"));
-            capturedBlocks.add(new PropertyBlock("host", "fake.myshopify.com"));
-            capturedBlocks.add(new PropertyBlock("product_ids", "1234567"));
-            capturedBlocks.add(new PropertyBlock("customer_id", "8910111213"));
-            capturedBlocks.add(new PropertyBlock("authorization", "fakeauthorization123"));
-            capturedBlocks.add(new PropertyBlock("customertoken", "fakecustomer123"));
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+        capturedBlocks.add(new PropertyBlock("appId", "123"));
+        capturedBlocks.add(new PropertyBlock("host", "fake.myshopify.com"));
+        capturedBlocks.add(new PropertyBlock("product_ids", "1234567"));
+        capturedBlocks.add(new PropertyBlock("customer_id", "8910111213"));
+        capturedBlocks.add(new PropertyBlock("authorization", "fakeauthorization123"));
+        capturedBlocks.add(new PropertyBlock("customertoken", "fakecustomer123"));
     }
 
     public static boolean hasBlockFor(String key){
