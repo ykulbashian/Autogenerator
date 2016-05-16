@@ -38,9 +38,8 @@ public abstract class PresenterActivity<T> extends Activity implements Presenter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int layoutId = 0;
         LayoutXml annotation = getClass().getAnnotation(LayoutXml.class);
-        layoutId = annotation.value();
+        int layoutId = annotation.value();
 
         setContentView(layoutId);
 

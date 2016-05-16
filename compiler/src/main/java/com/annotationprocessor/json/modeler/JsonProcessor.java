@@ -5,6 +5,8 @@ import com.mycardboarddreams.api.Jsonify;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.Set;
 
@@ -69,8 +71,8 @@ public class JsonProcessor extends AbstractProcessor{
 
                 ModelCreator modelCreator = new ModelCreator(Arrays.asList(ignore), packageName);
                 modelCreator.createObjectModel(
-                        packageName,
-                        (String) element.getConstantValue());
+                        element.getSimpleName().toString(),
+                        new JSONObject((String) element.getConstantValue()));
 
             } catch (Exception e){
                 error(annotatedElement, "Failed to generate annotated class for model %s. \n%s", annotatedElement.getSimpleName().toString(), e.getMessage());

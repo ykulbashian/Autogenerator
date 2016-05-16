@@ -1,4 +1,4 @@
-package com.annotationprocessor.json.mocks;
+package com.mycardboarddreams.api.mock;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -11,7 +11,7 @@ import okhttp3.ResponseBody;
 /**
  * Created by ykulbashian on 16-04-17.
  */
-public class ShopifyResponses {
+public class ShopifyMockResponses {
 
     @Jsonify(ignoreBeginsWith = {"Body"})
     public static final String shopify0 = "" +

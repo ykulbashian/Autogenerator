@@ -58,7 +58,11 @@ public class ModelCreator {
         return allContainedElements;
     }
 
-    private AnnotatedClass createObjectModel(String rootPackagename, String rootClassname, JSONObject json) throws JSONException {
+    public AnnotatedClass createObjectModel(String rootClassname, JSONObject json) throws JSONException {
+        return createObjectModel(basePackageName, rootClassname, json);
+    }
+
+    public AnnotatedClass createObjectModel(String rootPackagename, String rootClassname, JSONObject json) throws JSONException {
 
         String capitalizedClassname = removePluralization(capitalize(rootClassname));
 

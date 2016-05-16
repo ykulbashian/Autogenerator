@@ -92,6 +92,11 @@ public class Endpoints extends ArrayList<Endpoint> {
                         .addAnnotation(AnnotationSpec.builder(Override.class).build())
                         .returns(ParameterizedTypeName.get(ClassName.get(Class.class), ClassName.get(endpointPackage, serviceClass.name)))
                         .addModifiers(PROTECTED)
+                        .build())
+                .addMethod(MethodSpec.methodBuilder("getHost")
+                        .addStatement("return \"https://" + ReferenceCatalogue.getBlockFor("host").deliver().toString() +"/\"")
+                        .returns(String.class)
+                        .addModifiers(PROTECTED)
                         .build());
 
         for(Endpoint endpoint : this){
@@ -101,8 +106,6 @@ public class Endpoints extends ArrayList<Endpoint> {
         TypeSpec retrofitClass = retrofitBuilder.build();
         JavaFile retrofitJavaFile = builder(endpointPackage, retrofitClass).build();
         retrofitJavaFile.writeTo(processingEnv.getFiler());
-
-        ReferenceCatalogue.addRetrofitProvider(retrofitClass);
     }
 
 }

@@ -1,10 +1,11 @@
 package com.annotationprocessor.json.fetching;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.annotationprocessor.json.ReferenceCatalogue;
 import com.annotationprocessor.json.blocks.Block;
-import com.annotationprocessor.json.mocks.MockResponseInterceptor;
+import com.mycardboarddreams.api.mock.MockResponseInterceptor;
 import com.annotationprocessor.json.utils.StringUtils;
 import com.mycardboarddreams.api.FetchJson;
 import com.mycardboarddreams.api.Jsonify;
@@ -18,6 +19,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,12 +28,14 @@ import java.util.regex.Pattern;
 
 import javax.lang.model.element.VariableElement;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static javax.lang.model.element.Modifier.ABSTRACT;
@@ -77,6 +82,14 @@ public class Endpoint implements Block<String> {
         return annotation.value();
     }
 
+    public String getUrlNoQueries(){
+        String rawEndpoint = getBaseUrl();
+        int questionIndex = rawEndpoint.indexOf("?");
+        if(questionIndex >= 0)
+            rawEndpoint = rawEndpoint.substring(0, questionIndex);
+        return rawEndpoint;
+    }
+
     public String getEndpoint() {
         return annotatedElement.getSimpleName().toString();
     }
@@ -102,10 +115,12 @@ public class Endpoint implements Block<String> {
 
     }
 
-    public MethodSpec.Builder getServiceMethod(String packageName) throws MissingKeyException {
+    public MethodSpec.Builder getServiceMethod(String packageName) throws MissingKeyException, MalformedURLException {
+        String rawEndpoint = getUrlNoQueries();
+
         MethodSpec.Builder builder = getProducerMethod(packageName).addModifiers(ABSTRACT);
         AnnotationSpec retrofitAnnotation = AnnotationSpec.builder(GET.class)
-                .addMember("value", "\"" + getBaseUrl() + "\"")
+                .addMember("value", "\"" + rawEndpoint + "\"")
                 .build();
 
         AnnotationSpec headerAnnotation = AnnotationSpec.builder(Headers.class)
@@ -118,7 +133,9 @@ public class Endpoint implements Block<String> {
         return builder;
     }
 
-    public MethodSpec.Builder getProducerMethod(String packageName) throws MissingKeyException {
+    public MethodSpec.Builder getProducerMethod(String packageName) throws MissingKeyException, MalformedURLException {
+
+        HttpUrl uri = HttpUrl.parse(completeUrl());
 
         AnnotationSpec serviceAnnotation = AnnotationSpec.builder(Produces.class).addMember("value", "\"" + getEndpoint() + "\"").build();
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(getMethodName())
@@ -126,7 +143,13 @@ public class Endpoint implements Block<String> {
                 .addModifiers(PUBLIC);
 
         for(String key : replacements){
-            AnnotationSpec annotationSpec = AnnotationSpec.builder(Path.class).addMember("value", "\"" + key + "\"").build();
+            AnnotationSpec annotationSpec;
+
+            if(uri.queryParameterNames().contains(key))
+                annotationSpec = AnnotationSpec.builder(Query.class).addMember("value", "\"" + key + "\"").build();
+            else
+                annotationSpec = AnnotationSpec.builder(Path.class).addMember("value", "\"" + key + "\"").build();
+
             ParameterSpec parameterSpec = ParameterSpec.builder(String.class, key)
                     .addAnnotation(annotationSpec)
                     .build();

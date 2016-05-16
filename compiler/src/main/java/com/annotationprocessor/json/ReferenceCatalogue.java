@@ -27,8 +27,6 @@ import javax.lang.model.element.Element;
  */
 public class ReferenceCatalogue {
 
-    private static TypeSpec retrofitProvider;
-
     private static final List<Block> capturedBlocks = new ArrayList<>();
 
     static {
@@ -39,7 +37,7 @@ public class ReferenceCatalogue {
 
             capturedBlocks.add(new PropertyBlock("appId", "123"));
             capturedBlocks.add(new PropertyBlock("host", "fake.myshopify.com"));
-            capturedBlocks.add(new PropertyBlock("product_id", "1234567"));
+            capturedBlocks.add(new PropertyBlock("product_ids", "1234567"));
             capturedBlocks.add(new PropertyBlock("customer_id", "8910111213"));
             capturedBlocks.add(new PropertyBlock("authorization", "fakeauthorization123"));
             capturedBlocks.add(new PropertyBlock("customertoken", "fakecustomer123"));
@@ -73,10 +71,6 @@ public class ReferenceCatalogue {
                 return false;
         }
         return true;
-    }
-
-    public static void addRetrofitProvider(TypeSpec retrofitProviderSpec){
-        retrofitProvider = retrofitProviderSpec;
     }
 
     public static String getModelPackage(ProcessingEnvironment env, Element element){

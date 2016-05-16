@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mycardboarddreams.api.generated.Produces;
+import com.mycardboarddreams.api.mock.MockResponseInterceptor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,10 +55,11 @@ public abstract class RetrofitProvider<I> {
         final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
 
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(new MockResponseInterceptor())
                 .addInterceptor(logging);
 
         Retrofit adapter = new Retrofit.Builder()
-            .baseUrl("https://mobilebuysdktestshop.myshopify.com")
+            .baseUrl(getHost())
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
             .client(builder.build())
@@ -77,6 +79,8 @@ public abstract class RetrofitProvider<I> {
 
         }
     }
+
+    protected abstract String getHost();
 
     protected abstract Class<I> getInterfaces();
 }

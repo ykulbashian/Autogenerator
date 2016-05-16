@@ -1,6 +1,5 @@
-package com.annotationprocessor.json.mocks;
+package com.mycardboarddreams.api.mock;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -25,8 +24,6 @@ public class MockResponseInterceptor implements Interceptor {
         String mockString = getStringForRequest(request);
         JsonObject data = (JsonObject) new JsonParser().parse(mockString);
 
-        System.out.println(">>> " + data.get("body").getAsJsonObject().toString());
-
         return new Response.Builder()
                 .message(data.get("message").getAsString())
                 .body(ResponseBody.create(MediaType.parse("application/json"), data.get("body").getAsJsonObject().toString()))
@@ -38,11 +35,11 @@ public class MockResponseInterceptor implements Interceptor {
 
     private String getStringForRequest(Request request) {
         if(request.url().encodedPath().contains("collection_listings"))
-            return ShopifyResponses.shopify103;
+            return ShopifyMockResponses.shopify103;
         if(request.url().encodedPath().contains("product_listings"))
-            return ShopifyResponses.shopify0;
+            return ShopifyMockResponses.shopify0;
         if(request.url().encodedPath().contains("customers"))
-            return ShopifyResponses.shopify112;
+            return ShopifyMockResponses.shopify112;
 
         return null;
     }
